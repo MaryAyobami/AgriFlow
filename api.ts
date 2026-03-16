@@ -80,7 +80,7 @@ export function setupApi(app: Express) {
 
   // User Management (Admin only)
   app.get("/api/users", authenticate, (req: any, res) => {
-    if (req.user.role !== 'Admin') return res.status(403).json({ error: "Forbidden" });
+    if (req.user.role !== 'Admin' && req.user.role !== 'Farm Manager') return res.status(403).json({ error: "Forbidden" });
     const users = db.prepare("SELECT id, username, full_name, role, approved, email, phone, department FROM users").all();
     res.json(users);
   });
@@ -116,11 +116,32 @@ export function setupApi(app: Express) {
 
   // Update the role of an existing approved user
   app.patch("/api/users/:id/role", authenticate, (req: any, res) => {
-    if (req.user.role !== 'Admin') return res.status(403).json({ error: "Forbidden" });
+    if (req.user.role !== 'Admin' && req.user.role !== 'Farm Manager') return res.status(403).json({ error: "Forbidden" });
     const { role } = req.body;
     db.prepare("UPDATE users SET role = ? WHERE id = ?").run(role, req.params.id);
     logActivity(req.user.id, "Update User Role", "User", req.params.id, `Role changed to ${role}`);
     res.json({ success: true });
+  });
+
+  // Admin/Farm Manager: create a user directly (bypasses approval flow)
+  app.post("/api/users/create", authenticate, (req: any, res) => {
+    if (req.user.role !== 'Admin' && req.user.role !== 'Farm Manager') return res.status(403).json({ error: "Forbidden" });
+    const { username, password, fullName, email, phone, role, department } = req.body;
+    if (!username || !password || !fullName || !email) {
+      return res.status(400).json({ error: "username, password, fullName and email are required" });
+    }
+    try {
+      const hashed = bcrypt.hashSync(password, 10);
+      db.prepare(`
+        INSERT INTO users (username, password, full_name, email, phone, role, department, approved)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+      `).run(username, hashed, fullName, email, phone || '', role || 'Farm Staff', department || '');
+      logActivity(req.user.id, "Create User", "User", username, `Created user ${username} with role ${role}`);
+      res.status(201).json({ success: true });
+    } catch (e: any) {
+      if (e.message?.includes('UNIQUE')) return res.status(400).json({ error: "Username already exists" });
+      res.status(400).json({ error: e.message });
+    }
   });
 
   // Approval Workflow Engine

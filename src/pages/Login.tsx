@@ -109,7 +109,6 @@ export default function Login() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                    placeholder="John Doe"
                     required
                   />
                 </div>
@@ -123,7 +122,6 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                    placeholder="john@farm.com"
                     required
                   />
                 </div>
@@ -134,7 +132,6 @@ export default function Login() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                    placeholder="+123..."
                     required
                   />
                 </div>
@@ -161,7 +158,6 @@ export default function Login() {
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                    placeholder="Livestock / Vet"
                     required
                   />
                 </div>
@@ -178,7 +174,6 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                placeholder="Choose a username"
                 required
               />
             </div>
@@ -193,7 +188,6 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
-                placeholder="Enter your password"
                 required
               />
             </div>
@@ -207,7 +201,7 @@ export default function Login() {
           </button>
           
           {!isRegister && (
-            <div className="text-center space-y-4 pt-2">
+            <div className="text-center pt-2">
               <button 
                 type="button"
                 onClick={() => setIsRegister(true)}
@@ -215,9 +209,6 @@ export default function Login() {
               >
                 Need an account? Create a profile
               </button>
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest">
-                Demo: admin / admin
-              </p>
             </div>
           )}
         </form>
